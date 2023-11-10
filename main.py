@@ -13,11 +13,14 @@ st.image(image,width=600)
 
 st.subheader('License')
 st.write('This web app is licensed free of charge for academic use and we shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use of this web app. In addition, we are under no obligation to provide maintenance, support, updates, enhancements, or modifications.')
-while not os.path.isfile('demo.zip'):
-    with zipfile.ZipFile('demo.zip', 'x') as csv_zip:
-        csv_zip.writestr("CGM_data.csv", 
-                        pd.read_csv("CGM_data.csv").to_csv(index=False))        
-with open("demo.zip", "rb") as file:
+
+
+if(os.path.isfile('demo.zip')):
+    os.remove('demo.zip')
+with zipfile.ZipFile('demo.zip', 'x') as csv_zip:
+    csv_zip.writestr("CGM_data.csv", 
+                    pd.read_csv("CGM_data.csv").to_csv(index=False))        
+with open("demo.zip", "rb") as file: 
     st.download_button(label = "Download demo data",data = file,file_name = "demo.zip")
 
 #Input
@@ -33,11 +36,14 @@ if df is not None:
         AC=pd.concat([AC, pd.DataFrame([df.iloc[i,0],X.mean(),X.std(),dff.iloc[1:].mean()[0],dff.iloc[1:].var()[0]]).T])
     AC=AC.rename(columns={0: 'ID'}).rename(columns={1: 'Mean'}).rename(columns={2: 'Std'}).rename(columns={3: 'AC_Mean'}).rename(columns={4: 'AC_Var'})
     st.write(AC.set_index('ID'))
-  
-    while not os.path.isfile('CGM_AC.zip'):
-        with zipfile.ZipFile('CGM_AC.zip', 'x') as csv_zip:
-            csv_zip.writestr("CGM_AC.csv",
-                            AC.to_csv(index=False))
+
+
+
+    if(os.path.isfile('CGM_AC.zip')):
+        os.remove('CGM_AC.zip')
+    with zipfile.ZipFile('CGM_AC.zip', 'x') as csv_zip:
+        csv_zip.writestr("CGM_AC.csv",
+                        AC.to_csv(index=False))
     with open("CGM_AC.zip", "rb") as file: 
         st.download_button(label = "Download the result",
-                           data = file,file_name = "CGM_AC.zip")
+                        data = file,file_name = "CGM_AC.zip")
